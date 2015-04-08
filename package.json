@@ -1,0 +1,14 @@
+{
+  "name": "pledge",
+  "version": "1.0.0",
+  "description": "a minimal promises A+ implementation",
+  "main": "pledge.js",
+  "scripts": {
+    "test": "promises-aplus-tests test/aplus-adapter"
+  },
+  "author": "Gabriel Lebec (github.com/glebec glebec@gmail.com)",
+  "license": "ISC",
+  "devDependencies": {
+    "promises-aplus-tests": "*"
+  }
+}
