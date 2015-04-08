@@ -13,7 +13,7 @@ var $Promise = function $Promise () {
     schedule : function schedule (fn) {
       schedule.fns = schedule.fns || [];
       if (fn) schedule.fns.push(fn);
-      else process.nextTick(function(){
+      else setImmediate(function(){
         var newIndex = schedule.fns.length;
         schedule.fns.forEach(function(fn){ fn(); });
         schedule.fns = schedule.fns.slice(newIndex);
@@ -52,6 +52,11 @@ function executes (handler, value, forwarder) {
       if (output === forwarder.promise) {
         var er = new TypeError('cannot forward the promise returned by .then');
         forwarder.reject(er);
+      } else if (output instanceof $Promise) {
+        output.then(
+          function(value) { forwarder.resolve(value); },
+          function(error) { forwarder.reject(error); }
+        );
       } else forwarder.resolve(output);
     } catch (err) {
       forwarder.reject(err);
