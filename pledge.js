@@ -49,7 +49,10 @@ function executes (handler, value, forwarder) {
   return function executing () {
     try {
       output = handler(value);
-      forwarder.resolve(output);
+      if (output === forwarder.promise) {
+        var er = new TypeError('cannot forward the promise returned by .then');
+        forwarder.reject(er);
+      } else forwarder.resolve(output);
     } catch (err) {
       forwarder.reject(err);
     }
