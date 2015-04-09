@@ -7,42 +7,40 @@ var HandlerGroup = function HandlerGroup (successCb, failureCb) {
 };
 
 var $Promise = function $Promise () {
-  this._internal = {
-    state : 'pending',
-    handlers : [],
-    schedule : function schedule (fn) {
-      schedule.fns = schedule.fns || [];
-      if (fn) schedule.fns.push(fn);
-      else setImmediate(function(){
-        var newIndex = schedule.fns.length;
-        schedule.fns.forEach(function(fn){ fn(); });
-        schedule.fns = schedule.fns.slice(newIndex);
-      });
-    }
+  this.state = 'pending';
+  this.handlers = [];
+  this.schedule = function schedule (fn) {
+    schedule.fns = schedule.fns || [];
+    if (fn) schedule.fns.push(fn);
+    else setImmediate(function(){
+      var newIndex = schedule.fns.length;
+      schedule.fns.forEach(function(fn){ fn(); });
+      schedule.fns = schedule.fns.slice(newIndex);
+    });
   };
 };
 
 $Promise.prototype.then = function then (successCb, failureCb) {
   var newGroup = new HandlerGroup(successCb, failureCb);
-  this._internal.handlers.push(newGroup);
+  this.handlers.push(newGroup);
   this.tryHandlers();
   return newGroup.forwarder.promise;
 };
 
 $Promise.prototype.tryHandlers = function tryHandlers () {
-  var my = this._internal, group, handler, bubble, output;
-  if (my.state === 'pending') return;
-  while (my.handlers.length) {
-    group = my.handlers.shift();
-    handler = (my.state === 'resolved') ? group.successCb : group.failureCb;
+  var group, handler, bubble, output;
+  if (this.state === 'pending') return;
+  while (this.handlers.length) {
+    group = this.handlers.shift();
+    handler = (this.state === 'resolved') ? group.successCb : group.failureCb;
     if (!handler) {
-      bubble = (my.state === 'resolved') ? 'resolve' : 'reject';
-      group.forwarder[bubble](my.value);
+      bubble = (this.state === 'resolved') ? 'resolve' : 'reject';
+      group.forwarder[bubble](this.value);
     } else {
-      my.schedule(executes(handler, my.value, group.forwarder));
+      this.schedule(executes(handler, this.value, group.forwarder));
     }
   }
-  my.schedule();
+  this.schedule();
 };
 
 function executes (handler, value, forwarder) {
@@ -71,17 +69,17 @@ var Deferral = function Deferral () {
 };
 
 Deferral.prototype.resolve = function resolve (value) {
-  if (this.promise._internal.state !== 'pending') return;
-  this.promise._internal.state = 'resolved';
-  this.promise._internal.value = value;
+  if (this.promise.state !== 'pending') return;
+  this.promise.state = 'resolved';
+  this.promise.value = value;
   this.promise.tryHandlers();
   return this.promise;
 };
 
 Deferral.prototype.reject = function reject (reason) {
-  if (this.promise._internal.state !== 'pending') return;
-  this.promise._internal.state = 'rejected';
-  this.promise._internal.value = reason;
+  if (this.promise.state !== 'pending') return;
+  this.promise.state = 'rejected';
+  this.promise.value = reason;
   this.promise.tryHandlers();
   return this.promise;
 };
