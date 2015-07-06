@@ -67,8 +67,8 @@ function executes (handler, value, downstream) {
 // most of the complexity comes from "thenables", objets which may be promises
 function promiseResolutionProcedure (downstream, x) { // 2.3
   var promise = downstream.promise,
-      resolve = downstream.resolve.bind(downstream),
-      reject = downstream.reject.bind(downstream);
+      resolve = downstream.resolve,
+      reject = downstream.reject;
   if (promise === x) { // 2.3.1
     reject( new TypeError('handlers must not return current chain') );
   } else if ( x instanceof $Promise ) { // 2.3.2
@@ -127,7 +127,7 @@ Deferral.prototype.reject = function reject (reason) {
 function Potential (executor) {
   if (!isFunction(executor)) throw new TypeError('Potential takes a function');
   var deferral = Potential.defer();
-  executor( deferral.resolve.bind(deferral), deferral.reject.bind(deferral) );
+  executor( deferral.resolve, deferral.reject );
   return deferral.promise;
 }
 
