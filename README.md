@@ -65,7 +65,7 @@ var promise = deferral.promise;
 
 ##### Pre-resolved or Pre-rejected
 
-You can also create promises pre-resolved or rejected with any value `val`. This is useful when you are not sure if `val` is already a promise or not, or if you want to create a starting point for an iteratively-built promise chain.
+You can also create promises pre-resolved or rejected with any non-thenable value `val`. This is useful when you want to create a starting point for an iteratively-built promise chain. In the future this function may be able to take a promise/thenable, but in the current implementation it does not.
 
 ```js
 var resolvedPromise = Potential.resolved(val); // alias: Potential.resolve(val)
