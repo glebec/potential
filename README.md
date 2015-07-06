@@ -1,10 +1,10 @@
-<a href="https://promisesaplus.com/">
-    <img src="https://promisesaplus.com/assets/logo-small.png" alt="Promises/A+ logo" title="Promises/A+ 1.0 compliant" align="right"/>
-</a>
-
 # Potential.js
 
 ## A minimal Promises/A+ implementation
+
+<a href="https://promisesaplus.com/">
+    <img src="https://promisesaplus.com/assets/logo-small.png" alt="Promises/A+ logo" title="Promises/A+ 2.1 compliant" align="right"/>
+</a>
 
 `Potential` was written as an exercise in passing the full Promises/A+ spec. Emphasis is on adhering to the spec language and commenting the source code accordingly.
 
