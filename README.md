@@ -18,7 +18,7 @@ var Potential = require('potential');
 
 ### API
 
-#### Creation
+#### Promise creation
 
 ##### Constructor pattern (recommended)
 
@@ -51,6 +51,67 @@ var promise = deferral.promise;
 You can also create promises pre-resolved or rejected with any value `val`. This is useful when you are not sure if `val` is already a promise or not, or if you want to create a starting point for an iteratively-built promise chain.
 
 ```js
-var resolvedPromiseWithVal = Potential.resolved(val);
-var rejectedPromiseWithVal = Potential.rejected(val);
+var resolvedPromise = Potential.resolved(val); // alias: Potential.resolve(val)
+var rejectedPromise = Potential.rejected(val); // alias: Potential.reject(val)
 ```
+
+#### Promise usage
+
+##### promise.then
+
+A promise's main method is `.then`, which takes two optional handler functions:
+
+```js
+promise.then(successFn, failureFn);
+```
+
+If either parameter is not a function (e.g. `null`) it is ignored. If `promise` is resolved with `val`, then `successFn` will be invoked with `val`. If `promise` is rejected with `val`, then `failureFn` will be invoked with `val`.
+
+`.then` returns a new promise whose fate is tied to the functions passed in (or not) to the previous `.then`.
+
+```js
+p1.then(successFn, failureFn) // returns p2 which we can chain `.then` on
+  .then(successF2, failureF2);
+```
+
+* If `p1` resolves or rejects with a value and does not have the appropriate handler (`successFn` or `failureFn` is not a function), `p2` is resolved or rejected with the same value. This is called bubbling. In other words, values bubble down to the first handler of the correct type in the chain.
+* If `p1` resolves or rejects with a value `v1` and has the appropriate handler (`successFn` or `failureFn` is a function), that handler is invoked with `v1`.
+    - if the handler returns a normal value `x`, `p2` is resolved with `x`, meaning `successF2` is invoked with `x`.
+    - if the handler returns a promise or thenable `pX`, `p2` assimilates that promise or thenable, meaning `successF2` is invoked with the promised value `x`.
+    - if the handler `throw`s an error `e`, `p2` is rejected with `e`, meaning `failureF2` is invoked with `e`.
+
+This complex behavior is the reason why promises are versatile, powerful, and expressive.
+
+##### promise.catch
+
+For convenience, an error handler can be inserted into a chain using `catch`:
+
+```js
+p1.then(successFn)
+  .catch(failureFn)
+```
+
+`promise.catch(failureFn)` is just a wrapper for `promise.then(null, failureFn)` and returns the same promise `.then` does. However, note that the following are distinct:
+
+```js
+// potentially problematic:
+p1.then(successFn, failureFn) // failureFn won't catch errs thrown by successFn
+// better:
+p1.then(successFn)
+  .catch(failureFn); // failureFn catches both p1 rejection & successFn errors
+```
+
+Due to the above, it is generally good practice to add a `catch` *below* success handlers rather than using *parallel* success-error handlers. Remember, because of value bubbling, an error handler can be set at the bottom of a chain:
+
+```js
+p1.then(s1)
+  .then(s2)
+  .then(s3)
+  .catch(console.log.bind(console)); // will log errors from p1, s1, s2, or s3.
+```
+
+### Changelog
+
+#### 2015-06-06 v 1.0.1
+
+Added `catch`.

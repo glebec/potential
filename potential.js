@@ -29,11 +29,17 @@ function $Promise () {
   this.chains = [];
 }
 
+// attaches success and failure handlers to the promised value
 $Promise.prototype.then = function then (onFulfilled, onRejected) {
   var newChain = new ChainLink(onFulfilled, onRejected);
   this.chains.push(newChain);
   this.tryHandlers();
   return newChain.downstream.promise;
+};
+
+// extra feature: sugar for adding rejection handlers
+$Promise.prototype.catch = function (onRejected) {
+  return this.then(null, onRejected);
 };
 
 $Promise.prototype.tryHandlers = function tryHandlers () {
@@ -58,6 +64,7 @@ function executes (handler, value, downstream) {
   };
 }
 
+// most of the complexity comes from "thenables", objets which may be promises
 function promiseResolutionProcedure (downstream, x) { // 2.3
   var promise = downstream.promise,
       resolve = downstream.resolve.bind(downstream),
@@ -89,12 +96,14 @@ function promiseResolutionProcedure (downstream, x) { // 2.3
 
 //----- Deferral class -----
 
+// a parent/manager of an associated promise
 function Deferral () {
   this.promise = new $Promise();
   this.resolve = this.resolve.bind(this);
   this.reject = this.reject.bind(this);
 }
 
+// deferrals control their associated promise's final state
 Deferral.prototype.settle = function settle (state, value) {
   if (this.promise.state === 'pending' && state.match(/resolved|rejected/) ) {
     this.promise.state = state;
@@ -133,11 +142,13 @@ Potential.defer = function defer () {
 Potential.resolved = function resolved (value) {
   return new Deferral().resolve(value);
 };
+Potential.resolve = Potential.resolved; // alias
 
 // returns a new promise rejected with `reason`
 Potential.rejected = function rejected (reason) {
-  return new Deferral().reject(reason);
+  return new Deferral().reject(reason); // alias
 };
+Potential.reject = Potential.rejected;
 
 // It's alive!
 module.exports = Potential;
