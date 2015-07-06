@@ -6,7 +6,11 @@
 
 ### Installation
 
-`Potential` is available as an npm module. You can add it to your project with `npm install pledge --save`, or use it globally with `npm install pledge -g`.
+`Potential` is available as an npm module for Node.js projects. You can add it to your project with `npm install potential --save`, or use it globally with `npm install potential -g`. Then you can `require` it in your modules like so:
+
+```js
+var Potential = require('potential');
+```
 
 ### API
 
