@@ -146,9 +146,9 @@ Potential.resolve = Potential.resolved; // alias
 
 // returns a new promise rejected with `reason`
 Potential.rejected = function rejected (reason) {
-  return new Deferral().reject(reason); // alias
+  return new Deferral().reject(reason);
 };
-Potential.reject = Potential.rejected;
+Potential.reject = Potential.rejected; // alias
 
 // It's alive!
 module.exports = Potential;

@@ -3,20 +3,37 @@
 ## A minimal Promises/A+ implementation
 
 <a href="https://promisesaplus.com/">
-    <img src="https://promisesaplus.com/assets/logo-small.png" alt="Promises/A+ logo" title="Promises/A+ 2.1 compliant" align="right"/>
+    <img src="https://promisesaplus.com/assets/logo-small.png" alt="Promises/A+ logo" title="Promises/A+ 1.1 compliant" align="right"/>
 </a>
 
-`Potential` was written as an exercise in passing the full Promises/A+ spec. Emphasis is on adhering to the spec language and commenting the source code accordingly.
+`Potential` was written as an exercise in passing the full Promises/A+ spec. Emphasis is on adhering to the spec language and commenting the source code accordingly, so as to serve as an educational example.
 
 ### Installation
 
-`Potential` is available as an npm module for Node.js projects. You can add it to your project with `npm install potential --save`, or use it globally with `npm install potential -g`. Then you can `require` it in your modules like so:
+`Potential` is available as an npm module for Node.js projects. You can add it to your project in the usual fashion:
+
+```sh
+npm install potential --save
+```
+
+Then you can `require` it in your modules like so:
 
 ```js
 var Potential = require('potential');
 ```
 
 ### API
+
+* [`Potential`](#constructor-pattern-recommended)
+* [`Potential.defer()`](#deferral-pattern-legacy--internal)
+    - `deferral.resolve`
+    - `deferral.reject`
+    - `deferra.promise`
+* [`Potential.resolved` / `Potential.rejected`](#pre-resolved-or-pre-rejected)
+    - aliases: `Potential.resolve` / `Potential.reject`
+* [`promise`](#promise-usage)
+    - [`promise.then`](#promisethen)
+    - [`promise.catch`](#promisecatch)
 
 #### Promise creation
 
@@ -109,9 +126,3 @@ p1.then(s1)
   .then(s3)
   .catch(console.log.bind(console)); // will log errors from p1, s1, s2, or s3.
 ```
-
-### Changelog
-
-#### 2015-06-06 v 1.0.1
-
-Added `catch`.
