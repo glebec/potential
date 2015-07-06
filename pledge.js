@@ -65,7 +65,7 @@ function promiseResolutionProcedure (downstream, x) { // 2.3
   if (promise === x) { // 2.3.1
     reject( new TypeError('handlers must not return current chain') );
   } else if ( x instanceof $Promise ) { // 2.3.2
-    x.then( promiseResolutionProcedure.bind(downstream), reject );
+    x.then( promiseResolutionProcedure.bind(null, downstream), reject );
   } else if ( isObjectOrFunction(x) ) { // 2.3.3
     try {
       var then = x.then; // 2.3.3.1
