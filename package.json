@@ -8,7 +8,7 @@
     "email": "glebec@gmail.com",
     "url": "https://github.com/glebec"
   },
-  "main": "potential.js",
+  "main": "lib/potential.js",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
@@ -17,7 +17,7 @@
   },
   "scripts": {
     "test": "promises-aplus-tests test/aplus-adapter",
-    "lint": "eslint potential.js"
+    "lint": "eslint lib/potential.js lib/extend.js"
   },
   "repository": {
     "type": "git",
