@@ -28,7 +28,7 @@ var Potential = require('potential');
 * [`Potential.defer()`](#deferral-pattern-legacy--internal)
     - `deferral.resolve`
     - `deferral.reject`
-    - `deferra.promise`
+    - `deferral.promise`
 * [`Potential.resolved` / `Potential.rejected`](#pre-resolved-or-pre-rejected)
     - aliases: `Potential.resolve` / `Potential.reject`
 * [`promise`](#promise-usage)
