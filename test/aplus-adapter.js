@@ -1,7 +1,7 @@
-var Pledge = require('../pledge');
+var Potential = require('../potential');
 
 module.exports = {
-  resolved: Pledge.resolved,
-  rejected: Pledge.rejected,
-  deferred: Pledge.defer
+  resolved: Potential.resolved,
+  rejected: Potential.rejected,
+  deferred: Potential.defer
 };

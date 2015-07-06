@@ -115,29 +115,29 @@ Deferral.prototype.reject = function reject (reason) {
 //===== Public =====
 
 // Library namespace & ES6-style constructor wrapper
-function Pledge (executor) {
-  if (!isFunction(executor)) throw new TypeError('Pledge takes a function');
-  var deferral = Pledge.defer();
+function Potential (executor) {
+  if (!isFunction(executor)) throw new TypeError('Potential takes a function');
+  var deferral = Potential.defer();
   executor( deferral.resolve.bind(deferral), deferral.reject.bind(deferral) );
   return deferral.promise;
 }
 
 // Deferral factory function
-Pledge.defer = function defer () {
+Potential.defer = function defer () {
   return new Deferral();
 };
 
 //----- Library methods -----
 
 // returns a new promise resolved with `value`
-Pledge.resolved = function resolved (value) {
+Potential.resolved = function resolved (value) {
   return new Deferral().resolve(value);
 };
 
 // returns a new promise rejected with `reason`
-Pledge.rejected = function rejected (reason) {
+Potential.rejected = function rejected (reason) {
   return new Deferral().reject(reason);
 };
 
 // It's alive!
-module.exports = Pledge;
+module.exports = Potential;

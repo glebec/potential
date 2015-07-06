@@ -1,14 +1,40 @@
 {
-  "name": "pledge",
+  "name": "potential",
   "version": "1.0.0",
   "description": "a minimal promises A+ implementation",
-  "main": "pledge.js",
-  "scripts": {
-    "test": "promises-aplus-tests test/aplus-adapter"
+  "homepage": "https://github.com/glebec/potential",
+  "author": {
+    "name": "Gabriel Lebec",
+    "email": "glebec@gmail.com",
+    "url": "https://github.com/glebec"
   },
-  "author": "Gabriel Lebec (github.com/glebec glebec@gmail.com)",
-  "license": "ISC",
+  "main": "potential.js",
+  "license": "MIT",
+  "dependencies": {},
   "devDependencies": {
-    "promises-aplus-tests": "*"
-  }
+    "promises-aplus-tests": "2.x",
+    "eslint": "^0.24.0"
+  },
+  "scripts": {
+    "test": "promises-aplus-tests test/aplus-adapter",
+    "lint": "eslint potential.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/glebec/potential.git"
+  },
+  "bugs": "https://github.com/glebec/potential/issues",
+  "keywords": [
+    "potential",
+    "promise",
+    "promises",
+    "promises-a",
+    "promises-aplus",
+    "deferred",
+    "future",
+    "async",
+    "asynchronous",
+    "control flow",
+    "node"
+  ]
 }
