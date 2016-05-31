@@ -12,19 +12,14 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "commitizen": "^2.8.1",
-    "cz-conventional-changelog": "^1.1.6",
     "eslint": "^0.24.0",
     "ghooks": "^1.2.1",
-    "promises-aplus-tests": "2.x",
-    "semantic-release": "^4.3.5"
+    "promises-aplus-tests": "2.x"
   },
   "scripts": {
-    "commit": "git-cz",
     "test": "promises-aplus-tests test/aplus-adapter",
     "test:vett": "npm test -- --reporter dot --bail",
-    "lint": "eslint lib/potential.js lib/extend.js",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "lint": "eslint lib/potential.js lib/extend.js"
   },
   "repository": {
     "type": "git",
@@ -45,9 +40,6 @@
     "node"
   ],
   "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    },
     "ghooks": {
       "pre-commit": "npm run test:vett"
     }
