@@ -18,7 +18,7 @@
   },
   "scripts": {
     "test": "promises-aplus-tests test/aplus-adapter",
-    "test:vett": "npm test -- --reporter dot --bail",
+    "test:vett": "npm test -- --reporter progress --bail",
     "lint": "eslint lib/potential.js lib/extend.js"
   },
   "repository": {
