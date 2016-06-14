@@ -12,13 +12,19 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
+    "chai": "^3.5.0",
     "eslint": "^0.24.0",
     "ghooks": "^1.2.1",
+    "mocha": "^2.5.3",
     "promises-aplus-tests": "2.x"
   },
   "scripts": {
-    "test": "promises-aplus-tests test/aplus-adapter",
-    "test:vett": "npm test -- --reporter dot --bail",
+    "test": "npm run test:lib && npm run test:aplus",
+    "test:lib": "mocha",
+    "test:aplus": "promises-aplus-tests test/aplus-adapter",
+    "test:lib:short": "npm run test:lib -- --reporter progress --bail",
+    "test:aplus:short": "npm run test:aplus -- --reporter progress --bail",
+    "test:vett": "npm run test:lib:short && npm run test:aplus:short",
     "lint": "eslint lib/potential.js lib/extend.js"
   },
   "repository": {
