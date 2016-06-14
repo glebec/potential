@@ -19,9 +19,12 @@
     "promises-aplus-tests": "2.x"
   },
   "scripts": {
-    "test": "npm run test:aplus",
+    "test": "npm run test:lib && npm run test:aplus",
+    "test:lib": "mocha",
     "test:aplus": "promises-aplus-tests test/aplus-adapter",
-    "test:vett": "npm test -- --reporter progress --bail",
+    "test:lib:short": "npm run test:lib -- --reporter progress --bail",
+    "test:aplus:short": "npm run test:aplus -- --reporter progress --bail",
+    "test:vett": "npm run test:lib:short && npm run test:aplus:short",
     "lint": "eslint lib/potential.js lib/extend.js"
   },
   "repository": {
