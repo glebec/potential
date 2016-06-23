@@ -13,7 +13,8 @@
   "dependencies": {},
   "devDependencies": {
     "chai": "^3.5.0",
-    "eslint": "^0.24.0",
+    "eslint": "^2.13.1",
+    "eslint-config-fullstack": "^1.0.1",
     "ghooks": "^1.2.1",
     "mocha": "^2.5.3",
     "promises-aplus-tests": "2.x"
