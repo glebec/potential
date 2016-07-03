@@ -1,6 +1,6 @@
 {
   "name": "potential",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "a minimal promises A+ implementation",
   "homepage": "https://github.com/glebec/potential",
   "author": {
