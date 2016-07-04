@@ -66,7 +66,7 @@ var promise = deferral.promise;
 // call deferral.resolve(val) or deferral.reject(val) at some point
 ```
 
-`promise` will be resolved with `val` if `deferral.resolve(val)` is called, or rejected with `val` if `deferral.reject(val)` is called.
+`promise` will be resolved with `val` if `deferral.resolve(val)` is called, or rejected with `val` if `deferral.reject(val)` is called. Both `resolve` and `reject` methods are pre-bound to `deferral`.
 
 ##### Pre-resolved or Pre-rejected
 
