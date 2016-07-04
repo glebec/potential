@@ -1,1 +1,3 @@
 extends: fullstack # npm module `eslint-config-fullstack`
+rules:
+  semi: [1, 'always']
