@@ -36,9 +36,11 @@ var Potential = require('potential');
 * [`Potential.resolved` / `Potential.rejected`](#pre-resolved-or-pre-rejected)
     - aliases: `Potential.resolve` / `Potential.reject`
     - [Results of attempted resolution or rejection](#results-of-attempted-resolution-or-rejection)
+* [`Potential.all`](#parallel-promise-management)
 * [`promise`](#promise-usage)
     - [`promise.then`](#promisethen)
     - [`promise.catch`](#promisecatch)
+    - [`promise.spread`](#promisespread)
 
 #### Promise creation
 
@@ -90,6 +92,24 @@ Value provided | return of `Potential.resolve` | return of `Potential.reject`
 Synchronous value `val` (any JS value, including `undefined`, an `Error` instance, etc.) | a promise fulfilled with `val` | a promise rejected with `val`
 Promise/thenable that fulfills with `val` | a promise that fulfills with `val` | a promise that rejects with `val`
 Promise/thenable that rejects with `val` | a promise that rejects with `val` | a promise that rejects with `val`
+
+##### Parallel promise management
+
+Promise chains allow for serial processing of asynchronous steps: first do A, then do B, and so on. However, another common need is to wait for multiple independent asynchronous actions to all complete, so that their results can be used together. `Potential.all` takes an array of values — any of which may be normal values, promises, or thenables — and returns a promise for an array of final results:
+
+```js
+// foo, bar, baz may be any mix of normal values, promises, and/or thenables
+Promise.all([fooPromise, barThenable, bazValue]);
+.then(function (results) {
+  console.log('finalFoo', results[0]);
+  console.log('finalBar', results[1]);
+  console.log('finalBaz', results[2]);
+})
+```
+
+Importantly, the original order of the array is preserved in the final results, although the individual results may finish at any time. The handler function is only called once *all* results have completed. If *any* of the original promises rejects, the success handler is not called; instead, the returned promise from `.all` is immediately rejected.
+
+The `.all` method is frequently used with [`.spread`](#promisespread).
 
 #### Promise usage
 
@@ -150,3 +170,30 @@ p1.then(s1)
   .then(s3)
   .catch(console.log.bind(console)); // will log errors from p1, s1, s2, or s3.
 ```
+
+##### promise.spread
+
+If you have a promise for an array of values, calling `.then(function success (arr) {...})` will invoke `success` with a single `arr` of results. If you know ahead of time what each index of the array is supposed to contain, this can lead to code like the following:
+
+```js
+promiseForArray
+.then(function (results) {
+  var rawData = results[0];
+  var metaData = results[1];
+  var flag = results[2];
+  console.log(rawData, metaData, flag);
+})
+```
+
+If you prefer to use formal parameters rather than an array of indexed results, `.spread` takes a handler function just like `.then`, but *"spreads"* the eventual results over the handler's parameters:
+
+```js
+promiseForArray
+.spread(function (rawData, metaData, flag) {
+  console.log(rawData, metaData, flag);
+})
+```
+
+Note that `.spread` returns a promise just like `.then`, and its handler behaves just like a `.then` success handler with respect to return values / thrown errors and promise chaining. Importantly, `.spread` does *not* take an optional error handler; any additional function arguments to `.spread` are ignored.
+
+Finally, note that `.spread` implicitly calls `.all` on the values array, so every formal parameter will be a resolved value, not a promise.
