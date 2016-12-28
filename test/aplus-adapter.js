@@ -1,4 +1,4 @@
-var Potential = require('../lib/potential');
+var Potential = require('../lib');
 
 module.exports = {
   resolved: Potential.resolved,
