@@ -17,7 +17,8 @@
     "test:lib:short": "npm run test:lib -- --reporter progress --bail",
     "test:aplus:short": "npm run test:aplus -- --reporter progress --bail",
     "test:vett": "npm run test:lib:short && npm run test:aplus:short",
-    "precommit": "npm run test:vett",
+    "precommit": "npm run test:lib:short",
+    "prepush": "npm run test:vett",
     "lint": "eslint lib/potential.js lib/extend.js",
     "docs": "jsdoc -c jsdoc.conf.json"
   },
