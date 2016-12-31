@@ -1,7 +1,7 @@
 var Potential = require('../lib');
 
 module.exports = {
-  resolved: Potential.resolved,
-  rejected: Potential.rejected,
+  resolved: Potential.resolve,
+  rejected: Potential.reject,
   deferred: Potential.defer
 };

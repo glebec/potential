@@ -1,0 +1,15 @@
+{
+  "source": {
+    "include": ["lib"]
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "templates": {
+    "cleverLinks": true
+  },
+  "opts": {
+    "recurse": true,
+    "destination": "docs"
+  }
+}
