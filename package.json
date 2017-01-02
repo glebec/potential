@@ -1,24 +1,18 @@
 {
   "name": "potential",
   "version": "1.5.0",
-  "description": "a minimal promises A+ implementation",
+  "description": "An ES6 Promises/A+ implementation",
   "homepage": "https://github.com/glebec/potential",
   "author": {
     "name": "Gabriel Lebec",
     "email": "glebec@gmail.com",
     "url": "https://github.com/glebec"
   },
-  "main": "lib/potential.js",
-  "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "eslint": "^3.0.0",
-    "eslint-config-fullstack": "^1.0.1",
-    "ghooks": "^1.2.1",
-    "mocha": "^3.0.0",
-    "promises-aplus-tests": "2.x"
+  "engines": {
+    "node": ">=6.0.0"
   },
+  "main": "lib",
+  "license": "MIT",
   "scripts": {
     "test": "npm run test:lib && npm run test:aplus",
     "test:lib": "mocha",
@@ -26,7 +20,21 @@
     "test:lib:short": "npm run test:lib -- --reporter progress --bail",
     "test:aplus:short": "npm run test:aplus -- --reporter progress --bail",
     "test:vett": "npm run test:lib:short && npm run test:aplus:short",
-    "lint": "eslint lib/potential.js lib/extend.js"
+    "precommit": "npm run test:lib:short",
+    "prepush": "npm run test:vett",
+    "lint": "eslint lib/potential.js lib/extend.js",
+    "docs": "jsdoc -c jsdoc.conf.json"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.12.2",
+    "eslint-config-fullstack": "^2.5.0",
+    "eslint-plugin-react": "^6.8.0",
+    "husky": "^0.12.0",
+    "jsdoc": "^3.4.3",
+    "mocha": "^3.0.0",
+    "promises-aplus-tests": "2.x"
   },
   "repository": {
     "type": "git",
@@ -45,10 +53,5 @@
     "asynchronous",
     "control flow",
     "node"
-  ],
-  "config": {
-    "ghooks": {
-      "pre-commit": "npm run test:vett"
-    }
-  }
+  ]
 }

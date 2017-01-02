@@ -1,6 +1,6 @@
 'use strict';
 var expect = require('chai').expect;
-var Potential = require('../lib/potential.js');
+var Potential = require('../lib');
 
 /**
  * Note: the main spec for Potential is the A+ spec, which can be run
@@ -87,23 +87,25 @@ describe('Potential', function () {
       });
     });
 
-    it('can unwrap a fulfilled promise', function (done) {
+    it('does not unwrap a fulfilled promise', function (done) {
       var fulfilled = Potential.resolve(sentinel);
       Potential.reject(fulfilled)
       .then(done) // this handler should not be called
       .catch(function (reason) {
-        expect(reason).to.equal(sentinel);
+        expect(reason).to.equal(fulfilled);
+        expect(reason).not.to.equal(sentinel);
         done();
       });
     });
 
-    it('can unwrap an eventually-fulfilled promise', function (done) {
+    it('does not unwrap an eventually-fulfilled promise', function (done) {
       var deferral = Potential.defer();
       var toBeFulfilled = deferral.promise;
       Potential.reject(toBeFulfilled)
       .then(done) // this handler should not be called
       .catch(function (reason) {
-        expect(reason).to.equal(sentinel);
+        expect(reason).to.equal(toBeFulfilled);
+        expect(reason).not.to.equal(sentinel);
         done();
       });
       setTimeout(function () {
@@ -111,23 +113,25 @@ describe('Potential', function () {
       }, 10);
     });
 
-    it('can unwrap a rejected promise', function (done) {
+    it('does not unwrap a rejected promise', function (done) {
       var rejected = Potential.reject(sentinel);
       Potential.reject(rejected)
       .then(done) // this handler should not be called
       .catch(function (reason) {
-        expect(reason).to.equal(sentinel);
+        expect(reason).to.equal(rejected);
+        expect(reason).not.to.equal(sentinel);
         done();
       });
     });
 
-    it('can unwrap an eventually-rejected promise', function (done) {
+    it('does not unwrap an eventually-rejected promise', function (done) {
       var deferral = Potential.defer();
       var toBeRejected = deferral.promise;
       Potential.reject(toBeRejected)
       .then(done) // this handler should not be called
       .catch(function (reason) {
-        expect(reason).to.equal(sentinel);
+        expect(reason).to.equal(toBeRejected);
+        expect(reason).not.to.equal(sentinel);
         done();
       });
       setTimeout(function () {

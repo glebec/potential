@@ -4,13 +4,15 @@
 
 # Potential.js
 
-## A minimal Promises/A+ implementation
+## An ES6 Promises/A+ implementation
 
 <a href="https://promisesaplus.com/">
     <img src="https://promisesaplus.com/assets/logo-small.png" alt="Promises/A+ logo" title="Promises/A+ 1.1 compliant" align="right"/>
 </a>
 
-`Potential` was written as an exercise in passing the full Promises/A+ spec. Emphasis is on adhering to the spec language and commenting the source code accordingly, so as to serve as an educational example.
+`Potential` was written as an exercise in passing the full Promises/A+ spec. Emphasis is on adhering to the spec language and commenting the source code accordingly, so as to serve as an educational example. Extended methods such as `catch`, `all`, `map`, and `spread` are also included.
+
+`Potential` is neither performance-optimized nor designed for maximum safety in production use (e.g. providing type checks, antipattern warnings and similar). Instead, it concentrates on relatively straightforward source code written using recent language features. For a highly performant, feature-rich, robust promise library, check out [Bluebird](http://bluebirdjs.com/docs/getting-started.html).
 
 ### Installation
 
@@ -28,19 +30,23 @@ var Potential = require('potential');
 
 ### API
 
-* [`Potential`](#constructor-pattern-recommended)
+* [`Potential(executor)`](#constructor-pattern-recommended)
 * [`Potential.defer()`](#deferral-pattern-legacy--internal)
-    - `deferral.resolve`
-    - `deferral.reject`
-    - `deferral.promise`
-* [`Potential.resolved` / `Potential.rejected`](#pre-resolved-or-pre-rejected)
-    - aliases: `Potential.resolve` / `Potential.reject`
-    - [Results of attempted resolution or rejection](#results-of-attempted-resolution-or-rejection)
-* [`Potential.all`](#parallel-promise-management)
+  - `deferral.resolve`
+  - `deferral.reject`
+  - `deferral.promise`
+* [`Potential.resolve` / `Potential.reject`](#pre-resolved-or-pre-rejected)
+  - [Results of attempted resolution or rejection](#results-of-attempted-resolution-or-rejection)
+* [Dual methods (static and instance)](#parallel-promise-management)
+  - [`Potential.all`](#potentialall)
+  - [`Potential.map`](#potentialmap)
+  - [`Potential.race`](#potentialrace)
+  - [`Potential.delay`](#potentialdelay)
 * [`promise`](#promise-usage)
-    - [`promise.then`](#promisethen)
-    - [`promise.catch`](#promisecatch)
-    - [`promise.spread`](#promisespread)
+  - [`promise.then`](#promisethen)
+  - [`promise.catch`](#promisecatch)
+  - [`promise.finally`](#promisefinally)
+  - [`promise.spread`](#promisespread)
 
 #### Promise creation
 
@@ -54,13 +60,13 @@ var promise = new Potential(function(resolve, reject){
 })
 ```
 
-`promise` will be resolved with `val` if `resolve(val)` is called, or rejected with `val` if `reject(val)` is called.
+`promise` will be resolved with `val` if `resolve(val)` is called, or rejected with `val` if `reject(val)` is called. Both the resolver and rejector are pre-bound to the promise.
 
 *Side note: when `Potential` is used as a function, it always `return`s a unique promise instance, whether called with `new` or not. In fact, `new` does not affect `Potential`'s return value at all. However, it is still recommended to write the `new` operator if only to emphasize `Potential`'s role as a constructor and avoid confusing style inconsistencies.*
 
 ##### Deferral pattern (legacy/internal)
 
-Internally, `Potential` uses deferrals for its implementation, and the constructor API is merely an abstraction. A deferral is just a container grouping a promise with its associated resolver and rejector functions. The constructor pattern hides this conceptually irrelevant wrapper object and discourages leaking the resolver/rejector to different scopes. However, there is nothing wrong with deferrals when used correctly.
+A deferral is just a container grouping a promise with its associated resolver and rejector functions. The constructor pattern hides this conceptually irrelevant wrapper object and discourages improper leaking of the resolver/rejector to different scopes. However, there is nothing wrong with deferrals when used correctly.
 
 ```js
 var deferral = Potential.defer();
@@ -79,8 +85,8 @@ You can also create promises pre-resolved or pre-rejected with any `val`. Note t
 * normalize an unknown value (synchronous or a promise/thenable) into a promise
 
 ```js
-var resolvedPromise = Potential.resolved(val); // alias: Potential.resolve(val)
-var rejectedPromise = Potential.rejected(val); // alias: Potential.reject(val)
+var resolvedPromise = Potential.resolve(val);
+var rejectedPromise = Potential.reject(val);
 ```
 
 ###### Results of attempted resolution or rejection
@@ -95,7 +101,11 @@ Promise/thenable that rejects with `val` | a promise that rejects with `val` | a
 
 ##### Parallel promise management
 
-Promise chains allow for serial processing of asynchronous steps: first do A, then do B, and so on. However, another common need is to wait for multiple independent asynchronous actions to all complete, so that their results can be used together. `Potential.all` takes an array of values — any of which may be normal values, promises, or thenables — and returns a promise for an array of final results:
+Promise chains allow for serial processing of asynchronous steps: first do A, then do B, and so on. However, another common need is to wait for multiple independent asynchronous actions to all complete, so that their results can be used together.
+
+###### Potential.all
+
+Take an iterable collection (or promise/thenable for iterable) of values — any of which may be normal values, promises, or thenables — and return a promise for an array of final results:
 
 ```js
 // foo, bar, baz may be any mix of normal values, promises, and/or thenables
@@ -107,9 +117,61 @@ Promise.all([fooPromise, barThenable, bazValue]);
 })
 ```
 
-Importantly, the original order of the array is preserved in the final results, although the individual results may finish at any time. The handler function is only called once *all* results have completed. If *any* of the original promises rejects, the success handler is not called; instead, the returned promise from `.all` is immediately rejected.
+Importantly, the original order of the collection is preserved in the final results, although the individual results may finish at any time. The handler function is only called once *all* results have completed. If *any* of the original promises rejects, the success handler is not called; instead, the returned promise from `.all` is immediately rejected.
+
+Promise instances have an equivalent `all` method:
+
+```js
+promiseForArray.all().then(arr => console.log(arr)) // 1, 2, 3
+```
 
 The `.all` method is frequently used with [`.spread`](#promisespread).
+
+###### Potential.map
+
+Identical to `.all` except values are passed through a provided mapper function.
+
+```js
+// foo, bar, baz may be any mix of normal values, promises, and/or thenables
+const mapper = val => val + '!';
+const inputArr = [aPromise, bThenable, cValue];
+Promise.map(inputArr, mapper);
+.then(function (mappedResults) {
+  console.log(mappedResults); // a!, b!, c!
+});
+```
+
+Promise instances have an equivalent `map` method:
+
+```js
+promiseForArray.map(val => val + '!').then(arr => console.log(arr)) // 1!, 2!, 3!
+```
+
+###### Potential.race
+
+Take an iterable collection (or promise for collection) of input values, thenables, and/or promises. Return a promise for the first value to settle. If any promise rejects before then, reject the output promise.
+
+```js
+Potential.race([fastPromiseForA, fasterPromiseForB, slowPromiseForC])
+.then(console.log.bind(console)) // B
+```
+
+Promise instances have an equivalent `race` method.
+
+##### Potential.delay
+
+Create a promise which delays resolution until X ms.
+
+```js
+Potential.delay('hello', 1000)
+.then(console.log.bind(console)); // after one second: 'hello'
+```
+
+Promise instances have an equivalent `delay` method:
+
+```js
+promiseForHello.delay(1000).then(console.log.bind(console)) // after one second: 'hello'
+```
 
 #### Promise usage
 
@@ -169,6 +231,19 @@ p1.then(s1)
   .then(s2)
   .then(s3)
   .catch(console.log.bind(console)); // will log errors from p1, s1, s2, or s3.
+```
+
+##### promise.finally
+
+Sometimes you want to run a handler to perform a side effect (e.g. resource cleanup) regardless of whether a promise fulfilled or rejected. You may also want to continue the promise chain afterwards with the resulting fulfillment or rejection of your original promise. Finally, you may also want to delay continuation of the promise chain, for coordination purposes. `finally` satisfies all these needs. It lets you register a handler which will be invoked with no arguments, allowing values and rejections to pass through, but waiting on the handler before doing so:
+
+```js
+promiseA
+.finally(() => {
+  promiseB = db.close();
+  return promiseB;
+})
+.then(handlePromiseAResult, handlePromiseAErr) // delayed until promiseB completes, but ignores value/state of promiseB
 ```
 
 ##### promise.spread
