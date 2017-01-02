@@ -1,12 +1,15 @@
 {
   "name": "potential",
   "version": "1.5.0",
-  "description": "a minimal promises A+ implementation",
+  "description": "An ES6 Promises/A+ implementation",
   "homepage": "https://github.com/glebec/potential",
   "author": {
     "name": "Gabriel Lebec",
     "email": "glebec@gmail.com",
     "url": "https://github.com/glebec"
+  },
+  "engines": {
+    "node": ">=6.0.0"
   },
   "main": "lib",
   "license": "MIT",
