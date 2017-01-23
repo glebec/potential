@@ -1,6 +1,6 @@
 [![npm version](https://img.shields.io/npm/v/potential.svg?maxAge=3600)](https://www.npmjs.com/package/potential)
 [![Codeship](https://img.shields.io/codeship/0a206a10-0928-0134-3bbb-4e1ca58af965.svg)](https://codeship.com/projects/155189)
-[![Greenkeeper.io is keeping this repo's dependencies up to date](https://img.shields.io/badge/greenkeeper.io-monitoring-brightgreen.svg?maxAge=3600)](https://greenkeeper.io/)
+[![Greenkeeper badge](https://badges.greenkeeper.io/glebec/potential.svg)](https://greenkeeper.io/)
 
 # Potential.js
 
