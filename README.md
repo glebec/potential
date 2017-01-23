@@ -4,6 +4,8 @@
 
 # Potential.js
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/glebec/potential.svg)](https://greenkeeper.io/)
+
 ## An ES6 Promises/A+ implementation
 
 <a href="https://promisesaplus.com/">
